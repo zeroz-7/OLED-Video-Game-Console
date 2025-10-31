@@ -175,31 +175,43 @@ void spawnEnemy() {
     return;
   }
 }
+void shootBullet(){
+static unsigned long lastShot=0;
+if (millis()-lastShot<150){
+  return; 
+}
+lastShot=millis();
+for (int i = 0; i < MAX_BULLETS; i++) {
+  if (!bullets[i].active) {
+    bullets[i].x = player.x;
+    bullets[i].y = SCREEN_HEIGHT - 14;
+    bullets[i].active = true;
+    break;
+  }
+    }
 
+
+
+
+
+}
 void updateRoboDodge() {
   // Red = Fire
   if (pressed(BTN_RED)) {
-    for (int i = 0; i < MAX_BULLETS; i++) {
-      if (!bullets[i].active) {
-        bullets[i].x = player.x;
-        bullets[i].y = SCREEN_HEIGHT - 14;
-        bullets[i].active = true;
-        break;
-      }
-    }
-    waitRelease(BTN_RED);
+    shootBullet();
+    // waitRelease(BTN_RED);
   }
   
   // Yellow = Left
   if (pressed(BTN_YELLOW) && player.x > 6) { 
     player.x -= 3; 
-    waitRelease(BTN_YELLOW); 
+    // waitRelease(BTN_YELLOW); 
   }
   
   // Blue = Right
   if (pressed(BTN_BLUE) && player.x < SCREEN_WIDTH - 6) { 
     player.x += 3; 
-    waitRelease(BTN_BLUE); 
+    // waitRelease(BTN_BLUE); 
   }
   
   // White = Pause
@@ -290,10 +302,10 @@ void drawTicTacToe() {
   // Title
   display.setTextSize(1);
   display.setCursor(28, 0);
-  display.print(F("Tic-Tac-Toe"));
+  // display.print(F("Tic-Tac-Toe"));
   
-  int startX = 34, startY = 14;
-  int cellSize = 20;
+  int startX = 34, startY = 4;
+  int cellSize = 18;
 
   // Draw grid
   for (int i = 1; i < GRID_SIZE; i++) {
@@ -306,7 +318,7 @@ void drawTicTacToe() {
     for (int x = 0; x < GRID_SIZE; x++) {
       int cx = startX + x * cellSize + 6;
       int cy = startY + y * cellSize + 6;
-      display.setTextSize(2);
+      display.setTextSize(1.2);
       display.setCursor(cx, cy);
       if (board[y][x] != ' ') display.print(board[y][x]);
     }
